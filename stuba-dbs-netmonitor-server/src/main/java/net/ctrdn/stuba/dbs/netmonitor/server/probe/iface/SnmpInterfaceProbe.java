@@ -98,7 +98,8 @@ public class SnmpInterfaceProbe implements Probe {
                     }
                 }
                 this.logMessage(LogSeverity.DEBUG, "Interface stats update finished; created=" + ifStatsCount);
-
+                mysqlSession.getTransaction().commit();
+                mysqlSession.beginTransaction();
                 String aggregatedStatsQuery
                         = "INSERT INTO `nm_interface_aggregated_stats` (`probe_id`, `interface_count`, `rx_bytes`, `tx_bytes`, `rx_packets`, `tx_packets`)\n"
                         + "SELECT `ta`.`probe_id` as `probe_id`, COUNT(`ta`.`id`) as `interface_count`,\n"

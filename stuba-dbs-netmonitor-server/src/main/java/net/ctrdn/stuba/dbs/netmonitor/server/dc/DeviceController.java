@@ -3,11 +3,13 @@ package net.ctrdn.stuba.dbs.netmonitor.server.dc;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import net.ctrdn.stuba.dbs.netmonitor.hbm.NmDevice;
 import net.ctrdn.stuba.dbs.netmonitor.hbm.NmProbe;
 import net.ctrdn.stuba.dbs.netmonitor.hbm.NmProbeType;
 import net.ctrdn.stuba.dbs.netmonitor.server.Server;
+import net.ctrdn.stuba.dbs.netmonitor.server.annotation.NetmonitorProbe;
 import net.ctrdn.stuba.dbs.netmonitor.server.exception.ProbeException;
 import net.ctrdn.stuba.dbs.netmonitor.server.logging.LogSeverity;
 import net.ctrdn.stuba.dbs.netmonitor.server.probe.Probe;
@@ -51,7 +53,10 @@ public class DeviceController implements Runnable {
             while (true) {
                 for (Probe p : this.probeList) {
                     try {
+                        Date pollStart = new Date();
                         p.poll();
+                        Date pollEnd = new Date();
+                        this.server.getLog().message(LogSeverity.NOTICE, "Probe " + p.getClass().getAnnotation(NetmonitorProbe.class).name() + " on " + this.deviceRecord.getDeviceName() + " took " + (pollEnd.getTime() - pollStart.getTime()) + "ms");
                     } catch (ProbeException ex) {
                         this.server.getLog().message(LogSeverity.ERROR, "Polling error: " + ex.getMessage());
                     }
