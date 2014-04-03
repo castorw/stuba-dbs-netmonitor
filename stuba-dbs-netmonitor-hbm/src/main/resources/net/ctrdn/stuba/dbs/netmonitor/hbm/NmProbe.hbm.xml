@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Mar 18, 2014 9:13:36 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="net.ctrdn.stuba.dbs.netmonitor.hbm.NmProbe" table="nm_probe" catalog="stuba_netmonitor">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="nmProbeType" class="net.ctrdn.stuba.dbs.netmonitor.hbm.NmProbeType" fetch="select">
+            <column name="probe_type_id" not-null="true" />
+        </many-to-one>
+        <many-to-one name="nmDevice" class="net.ctrdn.stuba.dbs.netmonitor.hbm.NmDevice" fetch="select">
+            <column name="device_id" not-null="true" />
+        </many-to-one>
+        <property name="probeStatus" type="int">
+            <column name="probe_status" not-null="true" />
+        </property>
+        <property name="lastUpdateDate" type="timestamp">
+            <column name="last_update_date" length="19" />
+        </property>
+        <property name="createDate" type="timestamp">
+            <column name="create_date" length="19" not-null="true" />
+        </property>
+        <set name="nmProbeStatses" table="nm_probe_stats" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="probe_identity_id" not-null="true" />
+            </key>
+            <one-to-many class="net.ctrdn.stuba.dbs.netmonitor.hbm.NmProbeStats" />
+        </set>
+        <set name="nmInterfaces" table="nm_interface" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="probe_id" not-null="true" />
+            </key>
+            <one-to-many class="net.ctrdn.stuba.dbs.netmonitor.hbm.NmInterface" />
+        </set>
+        <set name="nmInterfaceAggregatedStatses" table="nm_interface_aggregated_stats" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="probe_id" not-null="true" />
+            </key>
+            <one-to-many class="net.ctrdn.stuba.dbs.netmonitor.hbm.NmInterfaceAggregatedStats" />
+        </set>
+    </class>
+</hibernate-mapping>

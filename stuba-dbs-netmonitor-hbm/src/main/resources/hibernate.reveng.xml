@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd">
+<hibernate-reverse-engineering>
+  <schema-selection match-catalog="stuba_netmonitor"/>
+  <table-filter match-name="nm_interface_stats"/>
+  <table-filter match-name="nm_interface"/>
+  <table-filter match-name="nm_probe_type"/>
+  <table-filter match-name="nm_interface_aggregated_stats"/>
+  <table-filter match-name="nm_probe_stats"/>
+  <table-filter match-name="nm_device"/>
+  <table-filter match-name="nm_probe"/>
+</hibernate-reverse-engineering>

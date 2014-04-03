@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+    <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+    <property name="hibernate.connection.url">jdbc:mysql://10.0.2.10:3306/stuba_netmonitor?zeroDateTimeBehavior=convertToNull</property>
+    <property name="hibernate.connection.username">stuba_netmonitor</property>
+    <property name="hibernate.connection.password">77nwt2uvfIZVgw7sbJPpA49asR7S7YvP</property>
+    <mapping resource="net/ctrdn/stuba/dbs/netmonitor/hbm/NmProbeStats.hbm.xml"/>
+    <mapping resource="net/ctrdn/stuba/dbs/netmonitor/hbm/NmInterface.hbm.xml"/>
+    <mapping resource="net/ctrdn/stuba/dbs/netmonitor/hbm/NmDevice.hbm.xml"/>
+    <mapping resource="net/ctrdn/stuba/dbs/netmonitor/hbm/NmProbe.hbm.xml"/>
+    <mapping resource="net/ctrdn/stuba/dbs/netmonitor/hbm/NmInterfaceStats.hbm.xml"/>
+    <mapping resource="net/ctrdn/stuba/dbs/netmonitor/hbm/NmInterfaceAggregatedStats.hbm.xml"/>
+    <mapping resource="net/ctrdn/stuba/dbs/netmonitor/hbm/NmProbeType.hbm.xml"/>
+  </session-factory>
+</hibernate-configuration>

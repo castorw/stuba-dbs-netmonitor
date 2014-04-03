@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Mar 18, 2014 9:13:36 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="net.ctrdn.stuba.dbs.netmonitor.hbm.NmInterface" table="nm_interface" catalog="stuba_netmonitor">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="nmProbe" class="net.ctrdn.stuba.dbs.netmonitor.hbm.NmProbe" fetch="select">
+            <column name="probe_id" not-null="true" />
+        </many-to-one>
+        <property name="interfaceIndex" type="int">
+            <column name="interface_index" not-null="true" />
+        </property>
+        <property name="interfaceName" type="string">
+            <column name="interface_name" not-null="true" />
+        </property>
+        <property name="interfaceType" type="string">
+            <column name="interface_type" />
+        </property>
+        <property name="lastUpdateDate" type="timestamp">
+            <column name="last_update_date" length="19" />
+        </property>
+        <property name="createDate" type="timestamp">
+            <column name="create_date" length="19" not-null="true" />
+        </property>
+        <set name="nmInterfaceStatses" table="nm_interface_stats" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="interface_id" not-null="true" />
+            </key>
+            <one-to-many class="net.ctrdn.stuba.dbs.netmonitor.hbm.NmInterfaceStats" />
+        </set>
+    </class>
+</hibernate-mapping>

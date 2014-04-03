@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Mar 18, 2014 9:13:36 PM by Hibernate Tools 3.6.0 -->
+<hibernate-mapping>
+    <class name="net.ctrdn.stuba.dbs.netmonitor.hbm.NmProbeStats" table="nm_probe_stats" catalog="stuba_netmonitor">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="nmProbe" class="net.ctrdn.stuba.dbs.netmonitor.hbm.NmProbe" fetch="select">
+            <column name="probe_identity_id" not-null="true" />
+        </many-to-one>
+        <property name="attributeName" type="string">
+            <column name="attribute_name" not-null="true" />
+        </property>
+        <property name="attributeValue" type="string">
+            <column name="attribute_value" length="65535" />
+        </property>
+        <property name="lastUpdateDate" type="timestamp">
+            <column name="last_update_date" length="19" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>
