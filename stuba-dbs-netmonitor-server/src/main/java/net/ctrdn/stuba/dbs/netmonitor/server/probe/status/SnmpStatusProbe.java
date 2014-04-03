@@ -7,6 +7,7 @@ import net.ctrdn.stuba.dbs.netmonitor.server.Server;
 import net.ctrdn.stuba.dbs.netmonitor.server.annotation.NetmonitorProbe;
 import net.ctrdn.stuba.dbs.netmonitor.server.exception.ProbeException;
 import net.ctrdn.stuba.dbs.netmonitor.server.exception.SnmpException;
+import net.ctrdn.stuba.dbs.netmonitor.server.logging.LogSeverity;
 import net.ctrdn.stuba.dbs.netmonitor.server.probe.Probe;
 import net.ctrdn.stuba.dbs.netmonitor.server.snmp.SnmpClient;
 import org.hibernate.Session;
@@ -48,11 +49,12 @@ public class SnmpStatusProbe implements Probe {
         try {
             int probeStatus = 0;
             SnmpException acquireException = null;
-            String sysDescr = null, sysUptime = null, sysName = null;
+            String sysDescr = null, sysUptime = null, sysName = null, sysLocation = null;
             try {
                 sysDescr = this.snmpClient.getSnmpDataAsString(new OID(".1.3.6.1.2.1.1.1.0"));
                 sysUptime = this.snmpClient.getSnmpDataAsString(new OID(".1.3.6.1.2.1.1.3.0"));
-                sysName = this.snmpClient.getSnmpDataAsString(new OID("1.3.6.1.2.1.1.5.0"));
+                sysName = this.snmpClient.getSnmpDataAsString(new OID(".1.3.6.1.2.1.1.5.0"));
+                sysLocation = this.snmpClient.getSnmpDataAsString(new OID(".1.3.6.1.2.1.1.6.0"));
                 probeStatus = 1;
             } catch (SnmpException ex) {
                 acquireException = ex;
@@ -62,6 +64,8 @@ public class SnmpStatusProbe implements Probe {
                 this.updateStats(mysqlSession, "sysName", sysName);
                 this.updateStats(mysqlSession, "sysDescr", sysDescr);
                 this.updateStats(mysqlSession, "sysUptime", sysUptime);
+                this.updateStats(mysqlSession, "sysLocaion", sysLocation);
+                this.logMessage(LogSeverity.DEBUG, this.deviceRecord.getDeviceName() + " (" + this.deviceRecord.getIpv4Address() + ") received sysName, sysDescr, sysUptime, sysLocation successfully");
             }
             mysqlSession.createSQLQuery("UPDATE `nm_probe` SET `probe_status` = '" + probeStatus + "', `last_update_date` = CURRENT_TIMESTAMP WHERE `id` = '" + this.probeRecord.getId() + "'").executeUpdate();
             mysqlSession.getTransaction().commit();
@@ -69,7 +73,7 @@ public class SnmpStatusProbe implements Probe {
                 throw acquireException;
             }
         } catch (SnmpException ex) {
-            ProbeException finalEx = new ProbeException("SNMP failed for " + this.deviceRecord.getDeviceName() + " (" + this.deviceRecord.getIpv4Address() + ")");
+            ProbeException finalEx = new ProbeException("SNMP operation failed for " + this.deviceRecord.getDeviceName() + " (" + this.deviceRecord.getIpv4Address() + "): " + ex.getMessage());
             finalEx.addSuppressed(ex);
             throw finalEx;
         } finally {
@@ -86,6 +90,10 @@ public class SnmpStatusProbe implements Probe {
         } else if (statsRecord != null && value == null) {
             mysqlSession.createSQLQuery("DELETE FROM `nm_probe_stats` WHERE `id` = '" + statsRecord.getId() + "'").executeUpdate();
         }
+    }
+
+    private void logMessage(LogSeverity severity, String message) {
+        this.server.getLog().message(severity, "[" + this.getClass().getSimpleName() + "] " + message);
     }
 
 }

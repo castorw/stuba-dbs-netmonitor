@@ -1,6 +1,8 @@
 package net.ctrdn.stuba.dbs.netmonitor.server.snmp;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import net.ctrdn.stuba.dbs.netmonitor.hbm.NmDevice;
 import net.ctrdn.stuba.dbs.netmonitor.server.exception.SnmpException;
 import org.snmp4j.CommunityTarget;
@@ -16,6 +18,9 @@ import org.snmp4j.smi.OID;
 import org.snmp4j.smi.OctetString;
 import org.snmp4j.smi.VariableBinding;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
+import org.snmp4j.util.DefaultPDUFactory;
+import org.snmp4j.util.TreeEvent;
+import org.snmp4j.util.TreeUtils;
 
 public class SnmpClient {
 
@@ -34,6 +39,28 @@ public class SnmpClient {
             finalEx.addSuppressed(ex);
             throw finalEx;
         }
+    }
+
+    public List<VariableBinding> getSnmpWalk(OID oid) throws SnmpException {
+        TreeUtils treeUtils = new TreeUtils(snmp, new DefaultPDUFactory());
+        List<TreeEvent> events = treeUtils.getSubtree(this.getSnmpTarget(), oid);
+        List<VariableBinding> allVarBindings = new ArrayList<>();
+        for (TreeEvent event : events) {
+            if (event != null) {
+                if (event.isError()) {
+                    throw new SnmpException("SNMP Walk Error: oid [\"" + oid + "\"] " + event.getErrorMessage());
+                }
+
+                VariableBinding[] varBindings = event.getVariableBindings();
+                if (varBindings == null || varBindings.length == 0) {
+                    throw new SnmpException("SNMP Walk Error: No result returned");
+                }
+                for (VariableBinding varBinding : varBindings) {
+                    allVarBindings.add(varBinding);
+                }
+            }
+        }
+        return allVarBindings;
     }
 
     public String getSnmpDataAsString(OID oid) throws SnmpException {
