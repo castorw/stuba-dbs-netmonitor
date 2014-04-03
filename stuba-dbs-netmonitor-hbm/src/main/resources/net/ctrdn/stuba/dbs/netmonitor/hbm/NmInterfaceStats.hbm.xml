@@ -17,22 +17,22 @@
         <property name="interfaceOperationalStatus" type="int">
             <column name="interface_operational_status" not-null="true" />
         </property>
-        <property name="interfaceRxBytes" type="int">
+        <property name="interfaceRxBytes" type="long">
             <column name="interface_rx_bytes" not-null="true" />
         </property>
-        <property name="interfaceTxBytes" type="int">
+        <property name="interfaceTxBytes" type="long">
             <column name="interface_tx_bytes" not-null="true" />
         </property>
-        <property name="interfaceRxPackets" type="int">
+        <property name="interfaceRxPackets" type="long">
             <column name="interface_rx_packets" not-null="true" />
         </property>
-        <property name="interfaceTxPackets" type="int">
+        <property name="interfaceTxPackets" type="long">
             <column name="interface_tx_packets" not-null="true" />
         </property>
-        <property name="interfaceRxDiscardsDrops" type="int">
+        <property name="interfaceRxDiscardsDrops" type="long">
             <column name="interface_rx_discards_drops" not-null="true" />
         </property>
-        <property name="interfaceTxDiscardsDrops" type="int">
+        <property name="interfaceTxDiscardsDrops" type="long">
             <column name="interface_tx_discards_drops" not-null="true" />
         </property>
         <property name="createDate" type="timestamp">

@@ -14,20 +14,20 @@
         <property name="interfaceCount" type="int">
             <column name="interface_count" not-null="true" />
         </property>
-        <property name="rxBytesSec" type="int">
+        <property name="rxBytesSec" type="long">
             <column name="rx_bytes_sec" not-null="true" />
         </property>
-        <property name="txBytesSec" type="int">
+        <property name="txBytesSec" type="long">
             <column name="tx_bytes_sec" not-null="true" />
         </property>
-        <property name="rxPacketsSec" type="int">
+        <property name="rxPacketsSec" type="long">
             <column name="rx_packets_sec" not-null="true" />
         </property>
-        <property name="txPacketsSec" type="int">
+        <property name="txPacketsSec" type="long">
             <column name="tx_packets_sec" not-null="true" />
         </property>
-        <property name="createDaet" type="timestamp">
-            <column name="create_daet" length="19" not-null="true" />
+        <property name="createDate" type="timestamp">
+            <column name="create_date" length="19" not-null="true" />
         </property>
     </class>
 </hibernate-mapping>
