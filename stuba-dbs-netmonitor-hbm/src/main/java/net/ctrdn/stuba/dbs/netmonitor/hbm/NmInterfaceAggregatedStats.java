@@ -11,22 +11,22 @@ public class NmInterfaceAggregatedStats implements java.io.Serializable {
     private Integer id;
     private NmProbe nmProbe;
     private int interfaceCount;
-    private long rxBytesSec;
-    private long txBytesSec;
-    private long rxPacketsSec;
-    private long txPacketsSec;
+    private long rxBytes;
+    private long txBytes;
+    private long rxPackets;
+    private long txPackets;
     private Date createDate;
 
     public NmInterfaceAggregatedStats() {
     }
 
-    public NmInterfaceAggregatedStats(NmProbe nmProbe, int interfaceCount, long rxBytesSec, long txBytesSec, long rxPacketsSec, long txPacketsSec, Date createDaet) {
+    public NmInterfaceAggregatedStats(NmProbe nmProbe, int interfaceCount, long rxBytes, long txBytes, long rxPackets, long txPackets, Date createDaet) {
         this.nmProbe = nmProbe;
         this.interfaceCount = interfaceCount;
-        this.rxBytesSec = rxBytesSec;
-        this.txBytesSec = txBytesSec;
-        this.rxPacketsSec = rxPacketsSec;
-        this.txPacketsSec = txPacketsSec;
+        this.rxBytes = rxBytes;
+        this.txBytes = txBytes;
+        this.rxPackets = rxPackets;
+        this.txPackets = txPackets;
         this.createDate = createDaet;
     }
 
@@ -54,36 +54,36 @@ public class NmInterfaceAggregatedStats implements java.io.Serializable {
         this.interfaceCount = interfaceCount;
     }
 
-    public long getRxBytesSec() {
-        return this.rxBytesSec;
+    public long getRxBytes() {
+        return this.rxBytes;
     }
 
-    public void setRxBytesSec(long rxBytesSec) {
-        this.rxBytesSec = rxBytesSec;
+    public void setRxBytes(long rxBytes) {
+        this.rxBytes = rxBytes;
     }
 
-    public long getTxBytesSec() {
-        return this.txBytesSec;
+    public long getTxBytes() {
+        return this.txBytes;
     }
 
-    public void setTxBytesSec(long txBytesSec) {
-        this.txBytesSec = txBytesSec;
+    public void setTxBytes(long txBytes) {
+        this.txBytes = txBytes;
     }
 
-    public long getRxPacketsSec() {
-        return this.rxPacketsSec;
+    public long getRxPackets() {
+        return this.rxPackets;
     }
 
-    public void setRxPacketsSec(long rxPacketsSec) {
-        this.rxPacketsSec = rxPacketsSec;
+    public void setRxPackets(long rxPackets) {
+        this.rxPackets = rxPackets;
     }
 
-    public long getTxPacketsSec() {
-        return this.txPacketsSec;
+    public long getTxPackets() {
+        return this.txPackets;
     }
 
-    public void setTxPacketsSec(long txPacketsSec) {
-        this.txPacketsSec = txPacketsSec;
+    public void setTxPackets(long txPackets) {
+        this.txPackets = txPackets;
     }
 
     public Date getCreateDate() {
