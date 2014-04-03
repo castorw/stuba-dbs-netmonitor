@@ -7,7 +7,7 @@
 #
 # Host: 10.0.2.10 (MySQL 5.5.35-0+wheezy1-log)
 # Database: stuba_netmonitor
-# Generation Time: 2014-04-03 12:16:44 +0000
+# Generation Time: 2014-04-03 17:45:56 +0000
 # ************************************************************
 
 
@@ -60,11 +60,11 @@ CREATE TABLE `nm_interface_aggregated_stats` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `probe_id` int(11) unsigned NOT NULL,
   `interface_count` int(11) NOT NULL,
-  `rx_bytes_sec` int(11) NOT NULL,
-  `tx_bytes_sec` int(11) NOT NULL,
-  `rx_packets_sec` int(11) NOT NULL,
-  `tx_packets_sec` int(11) NOT NULL,
-  `create_daet` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `rx_bytes` bigint(22) NOT NULL,
+  `tx_bytes` bigint(22) NOT NULL,
+  `rx_packets` bigint(22) NOT NULL,
+  `tx_packets` bigint(22) NOT NULL,
+  `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `probe_id` (`probe_id`),
   CONSTRAINT `nm_interface_aggregated_stats_ibfk_1` FOREIGN KEY (`probe_id`) REFERENCES `nm_probe` (`id`)
@@ -80,12 +80,12 @@ CREATE TABLE `nm_interface_stats` (
   `interface_id` int(11) unsigned NOT NULL,
   `interface_admin_status` int(1) NOT NULL DEFAULT '0',
   `interface_operational_status` int(1) NOT NULL DEFAULT '0',
-  `interface_rx_bytes` int(11) NOT NULL DEFAULT '0',
-  `interface_tx_bytes` int(11) NOT NULL DEFAULT '0',
-  `interface_rx_packets` int(11) NOT NULL DEFAULT '0',
-  `interface_tx_packets` int(11) NOT NULL DEFAULT '0',
-  `interface_rx_discards_drops` int(11) NOT NULL DEFAULT '0',
-  `interface_tx_discards_drops` int(11) NOT NULL,
+  `interface_rx_bytes` bigint(22) NOT NULL DEFAULT '0',
+  `interface_tx_bytes` bigint(22) NOT NULL DEFAULT '0',
+  `interface_rx_packets` bigint(22) NOT NULL DEFAULT '0',
+  `interface_tx_packets` bigint(22) NOT NULL DEFAULT '0',
+  `interface_rx_discards_drops` bigint(22) NOT NULL DEFAULT '0',
+  `interface_tx_discards_drops` bigint(22) NOT NULL,
   `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `interface_id` (`interface_id`),
