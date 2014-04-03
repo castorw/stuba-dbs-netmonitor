@@ -7,7 +7,7 @@
 #
 # Host: 10.0.2.10 (MySQL 5.5.35-0+wheezy1-log)
 # Database: stuba_netmonitor
-# Generation Time: 2014-03-12 17:55:16 +0000
+# Generation Time: 2014-04-03 12:16:44 +0000
 # ************************************************************
 
 
@@ -27,28 +27,10 @@ CREATE TABLE `nm_device` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `device_name` varchar(255) NOT NULL DEFAULT '',
   `device_description` text,
+  `ipv4_address` varchar(15) NOT NULL,
   `modified_date` timestamp NULL DEFAULT NULL,
   `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
-# Dump of table nm_device_identity
-# ------------------------------------------------------------
-
-CREATE TABLE `nm_device_identity` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `device_id` int(11) unsigned NOT NULL,
-  `ipv4_address` varchar(15) NOT NULL DEFAULT '',
-  `ipv4_last_hostname` varchar(255) DEFAULT NULL,
-  `identity_status` int(11) NOT NULL DEFAULT '0',
-  `last_update_date` timestamp NULL DEFAULT NULL,
-  `modified_date` timestamp NULL DEFAULT NULL,
-  `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `device_id` (`device_id`),
-  CONSTRAINT `nm_device_identity_ibfk_1` FOREIGN KEY (`device_id`) REFERENCES `nm_device` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -58,15 +40,15 @@ CREATE TABLE `nm_device_identity` (
 
 CREATE TABLE `nm_interface` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `probe_identity_id` int(11) unsigned NOT NULL,
+  `probe_id` int(11) unsigned NOT NULL,
   `interface_index` int(11) NOT NULL,
   `interface_name` varchar(255) NOT NULL DEFAULT '',
   `interface_type` varchar(255) DEFAULT NULL,
   `last_update_date` timestamp NULL DEFAULT NULL,
   `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `probe_identity_id` (`probe_identity_id`),
-  CONSTRAINT `nm_interface_ibfk_1` FOREIGN KEY (`probe_identity_id`) REFERENCES `nm_probe_identity` (`id`)
+  KEY `probe_id` (`probe_id`),
+  CONSTRAINT `nm_interface_ibfk_1` FOREIGN KEY (`probe_id`) REFERENCES `nm_probe` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -76,7 +58,7 @@ CREATE TABLE `nm_interface` (
 
 CREATE TABLE `nm_interface_aggregated_stats` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `probe_identity_id` int(11) unsigned NOT NULL,
+  `probe_id` int(11) unsigned NOT NULL,
   `interface_count` int(11) NOT NULL,
   `rx_bytes_sec` int(11) NOT NULL,
   `tx_bytes_sec` int(11) NOT NULL,
@@ -84,8 +66,8 @@ CREATE TABLE `nm_interface_aggregated_stats` (
   `tx_packets_sec` int(11) NOT NULL,
   `create_daet` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `probe_identity_id` (`probe_identity_id`),
-  CONSTRAINT `nm_interface_aggregated_stats_ibfk_1` FOREIGN KEY (`probe_identity_id`) REFERENCES `nm_probe_identity` (`id`)
+  KEY `probe_id` (`probe_id`),
+  CONSTRAINT `nm_interface_aggregated_stats_ibfk_1` FOREIGN KEY (`probe_id`) REFERENCES `nm_probe` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -127,23 +109,6 @@ CREATE TABLE `nm_probe` (
   KEY `probe_type_id` (`probe_type_id`),
   CONSTRAINT `nm_probe_ibfk_1` FOREIGN KEY (`device_id`) REFERENCES `nm_device` (`id`),
   CONSTRAINT `nm_probe_ibfk_2` FOREIGN KEY (`probe_type_id`) REFERENCES `nm_probe_type` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
-# Dump of table nm_probe_identity
-# ------------------------------------------------------------
-
-CREATE TABLE `nm_probe_identity` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `probe_id` int(11) unsigned NOT NULL,
-  `identity_id` int(11) unsigned NOT NULL,
-  `order_key` int(11) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`),
-  KEY `probe_id` (`probe_id`),
-  KEY `identity_id` (`identity_id`),
-  CONSTRAINT `nm_probe_identity_ibfk_1` FOREIGN KEY (`probe_id`) REFERENCES `nm_probe` (`id`),
-  CONSTRAINT `nm_probe_identity_ibfk_2` FOREIGN KEY (`identity_id`) REFERENCES `nm_device_identity` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
