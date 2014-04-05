@@ -37,7 +37,7 @@ public class SnmpInterfacePanel extends DefaultViewPanel {
         for (NmDevice deviceRecord : this.getView().getDeviceList()) {
             String newObj = deviceRecord.getId() + ", " + deviceRecord.getDeviceName();
             deviceComboModel.addElement(newObj);
-            if (this.selectedDeviceRecord != null && this.selectedDeviceRecord.getId() == deviceRecord.getId()) {
+            if (this.selectedDeviceRecord != null && this.selectedDeviceRecord.getId().equals(deviceRecord.getId())) {
                 deviceComboModel.setSelectedItem(newObj);
             }
         }
@@ -56,6 +56,9 @@ public class SnmpInterfacePanel extends DefaultViewPanel {
         this.labelAggregationDate.setText("-");
 
         if (this.selectedDeviceRecord != null) {
+            SnmpInterfaceView.SnmpDeviceContainer con = this.getView().getDevice(this.selectedDeviceRecord.getId());
+            this.selectedDeviceRecord = con.getDevice();
+            this.selectedProbeRecord = con.getProbe();
             NmInterfaceAggregatedStats aggregatedStatsRecord = this.getView().getAggregatedStats(this.selectedProbeRecord);
             if (aggregatedStatsRecord != null) {
                 this.labelInterfaceCount.setText(Integer.toString(aggregatedStatsRecord.getInterfaceCount()));
@@ -77,13 +80,12 @@ public class SnmpInterfacePanel extends DefaultViewPanel {
             for (NmInterface interfaceRecord : interfaceList) {
                 String newObj = interfaceRecord.getId() + ", " + interfaceRecord.getInterfaceName();
                 interfaceComboModel.addElement(newObj);
-                System.out.println(((this.selectedInterfaceRecord != null) ? this.selectedInterfaceRecord.getId() : "NULL") + " - " + interfaceRecord.getId());
                 if (this.selectedInterfaceRecord != null && this.selectedInterfaceRecord.getId().equals(interfaceRecord.getId())) {
                     interfaceComboModel.setSelectedItem(newObj);
-                    System.out.println("-SELECTED-");
                 }
             }
             if (this.selectedInterfaceRecord != null) {
+                this.selectedInterfaceRecord = this.getView().getInterface(this.selectedInterfaceRecord.getId());
                 Set<NmInterfaceStats> statsSet = this.selectedInterfaceRecord.getNmInterfaceStatses();
                 List<NmInterfaceStats> statsList = new ArrayList<>(statsSet);
                 Collections.sort(statsList, new Comparator<NmInterfaceStats>() {
@@ -94,8 +96,8 @@ public class SnmpInterfacePanel extends DefaultViewPanel {
                     }
                 });
                 for (NmInterfaceStats ifStats : statsList) {
-                    String adminStatus = (ifStats.getInterfaceAdminStatus() == 1) ? "Yes" : "No";
-                    String operStatus = (ifStats.getInterfaceOperationalStatus() == 1) ? "Yes" : "No";
+                    String adminStatus = (ifStats.getInterfaceAdminStatus() == 1) ? "Enabled" : "Disabled";
+                    String operStatus = (ifStats.getInterfaceOperationalStatus() == 1) ? "Enabled" : "Disabled";
                     statsTableModel.addRow(new Object[]{ifStats.getCreateDate().toString(), adminStatus, operStatus, SnmpInterfaceView.getReadableByteSize(ifStats.getInterfaceRxBytes()), SnmpInterfaceView.getReadableByteSize(ifStats.getInterfaceTxBytes()), ifStats.getInterfaceRxPackets(), ifStats.getInterfaceTxPackets(), ifStats.getInterfaceRxDiscardsDrops(), ifStats.getInterfaceTxDiscardsDrops()});
                 }
             }

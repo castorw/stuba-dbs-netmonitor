@@ -18,12 +18,12 @@ import net.ctrdn.stuba.dbs.netmonitor.hbm.NmProbe;
 import net.ctrdn.stuba.dbs.netmonitor.hbm.NmProbeType;
 
 public class DetailDialog extends javax.swing.JDialog {
-    
+
     private final DeviceView view;
     private NmDevice deviceRecord;
     private boolean editMode = false;
     private ProbeTypeSelectorTableModel probeSelectorTableModel;
-    
+
     public DetailDialog(DeviceView view, NmDevice deviceRecord, java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         this.deviceRecord = deviceRecord;
@@ -32,14 +32,14 @@ public class DetailDialog extends javax.swing.JDialog {
         this.loadProbeTypes();
         this.setLocation(parent.getLocation().x + (parent.getWidth() / 2) - (this.getWidth() / 2), parent.getLocation().y + (parent.getHeight() / 2) - (this.getHeight() / 2));
         this.mapKeyEvents();
-        
+
         if (this.deviceRecord == null) {
             this.loadAddMode();
         } else {
             this.loadViewMode();
         }
     }
-    
+
     private void loadProbeTypes() {
         this.probeSelectorTableModel = new ProbeTypeSelectorTableModel();
         this.probeSelectorTableModel.setColumnIdentifiers(new Object[]{"ID", "Probe Type", "Enabled"});
@@ -59,7 +59,7 @@ public class DetailDialog extends javax.swing.JDialog {
         this.tableProbes.getColumnModel().getColumn(2).setCellEditor(new ProbeTypeSelectorCellEditor());
         this.tableProbes.setDefaultRenderer(Object.class, new ColorableTableCellRenderer());
     }
-    
+
     private void loadData() {
         this.labelId.setText(Integer.toString(this.deviceRecord.getId()));
         this.tfDeviceName.setText(this.deviceRecord.getDeviceName());
@@ -69,7 +69,7 @@ public class DetailDialog extends javax.swing.JDialog {
         this.labelCreated.setText(this.deviceRecord.getCreateDate().toString());
         this.loadProbeTypes();
     }
-    
+
     private void saveData() {
         if (this.deviceRecord == null) {
             this.deviceRecord = new NmDevice();
@@ -116,7 +116,7 @@ public class DetailDialog extends javax.swing.JDialog {
         this.loadViewMode();
         this.view.refresh();
     }
-    
+
     private void deleteRecord() {
         if (this.deviceRecord != null && this.deviceRecord.getId() != null) {
             this.view.deleteDevice(this.deviceRecord);
@@ -124,7 +124,7 @@ public class DetailDialog extends javax.swing.JDialog {
             this.dispose();
         }
     }
-    
+
     private void loadViewMode() {
         this.editMode = false;
         this.buttonReload.setEnabled(true);
@@ -141,7 +141,7 @@ public class DetailDialog extends javax.swing.JDialog {
         this.loadData();
         this.probeSelectorTableModel.setEditMode(false);
     }
-    
+
     private void loadEditMode() {
         this.editMode = true;
         this.buttonReload.setEnabled(false);
@@ -158,7 +158,7 @@ public class DetailDialog extends javax.swing.JDialog {
         this.loadData();
         this.probeSelectorTableModel.setEditMode(true);
     }
-    
+
     private void loadAddMode() {
         this.editMode = true;
         this.buttonReload.setEnabled(false);
@@ -174,7 +174,7 @@ public class DetailDialog extends javax.swing.JDialog {
         this.tfDeviceIpV4Address.setEditable(true);
         this.probeSelectorTableModel.setEditMode(true);
     }
-    
+
     private void mapKeyEvents() {
         KeyStroke ksEscape = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
         KeyStroke ksEnter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
@@ -187,7 +187,7 @@ public class DetailDialog extends javax.swing.JDialog {
             }
         };
         Action dispatchSave = new AbstractAction() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (DetailDialog.this.editMode) {
@@ -195,7 +195,7 @@ public class DetailDialog extends javax.swing.JDialog {
                 }
             }
         };
-        
+
         JRootPane root = this.getRootPane();
         root.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ksEscape, dispatchWindowClosingActionMapKey);
         root.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ksEnter, dispatchSaveActionMapKey);

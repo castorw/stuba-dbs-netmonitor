@@ -79,10 +79,12 @@ public class DeviceView implements View {
         this.mysqlSession.beginTransaction();
         this.mysqlSession.save(deviceRecord);
         this.mysqlSession.getTransaction().commit();
+        this.mysqlSession.refresh(deviceRecord);
         return this.getDevice(deviceRecord.getId());
     }
 
     protected void deleteDevice(NmDevice deviceRecord) {
+        deviceRecord = this.getDevice(deviceRecord.getId());
         this.mysqlSession.beginTransaction();
         this.mysqlSession.delete(deviceRecord);
         this.mysqlSession.getTransaction().commit();

@@ -30,19 +30,19 @@ import org.hibernate.service.ServiceRegistry;
 import org.reflections.Reflections;
 
 public class ClientImpl implements Client {
-
+    
     public final static String APP_NAME = "DBS Netmonitor Client";
     public final static String APP_VERSION = "1.0.0";
-
+    
     private LoadingFrame loadingFrame;
     private MainFrame mainFrame;
     private SessionFactory mysqlSessionFactory;
     private Properties configuration;
-
+    
     private void configureLogging() {
         org.apache.log4j.PropertyConfigurator.configure("config/log4j.properties");
     }
-
+    
     private void configurePropertiesConfiguration() throws InitializationException {
         try {
             File propertiesFile = new File("config/configuration.properties");
@@ -58,7 +58,7 @@ public class ClientImpl implements Client {
             throw finalEx;
         }
     }
-
+    
     private void configureDatabaseConnection() throws InitializationException {
         try {
             Configuration hbConfig = new Configuration();
@@ -88,12 +88,13 @@ public class ClientImpl implements Client {
             throw finalEx;
         }
     }
-
+    
     private void configureLoadingView() {
         this.loadingFrame = new LoadingFrame();
+        this.loadingFrame.setTitle(this.getApplicationName() + " v" + this.getApplicationVersion());
         this.loadingFrame.setVisible(true);
     }
-
+    
     @Override
     public void start() {
         try {
@@ -102,7 +103,7 @@ public class ClientImpl implements Client {
             } catch (javax.swing.UnsupportedLookAndFeelException ex) {
                 java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
-
+            
             Random randomDelay = new Random(new Date().getTime());
             this.configureLoadingView();
 
@@ -134,7 +135,7 @@ public class ClientImpl implements Client {
                 viewClassList.add(viewClass);
             }
             Collections.sort(viewClassList, new Comparator<Class<?>>() {
-
+                
                 @Override
                 public int compare(Class<?> o1, Class<?> o2) {
                     NetmonitorView annot1 = o1.getDeclaredAnnotation(NetmonitorView.class);
@@ -142,7 +143,7 @@ public class ClientImpl implements Client {
                     return (annot1.orderKey() < annot2.orderKey()) ? -1 : (annot1.orderKey() == annot2.orderKey()) ? 0 : 1;
                 }
             });
-
+            
             int setSize = viewClassSet.size();
             int stepPerView = 50 / setSize;
             int i = 1;
@@ -171,22 +172,22 @@ public class ClientImpl implements Client {
             Thread.sleep(800 + randomDelay.nextInt(1000));
             this.loadingFrame.setVisible(false);
             this.mainFrame.setVisible(true);
-
+            
         } catch (InterruptedException | InitializationException ex) {
             this.handleException(ex);
         }
     }
-
+    
     @Override
     public SessionFactory getMysqlSessionFactory() {
         return this.mysqlSessionFactory;
     }
-
+    
     @Override
     public Properties getConfiguration() {
         return this.configuration;
     }
-
+    
     @Override
     public void handleException(Throwable thrwbl) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -195,17 +196,17 @@ public class ClientImpl implements Client {
         JOptionPane.showMessageDialog(this.loadingFrame, baos.toString(), "Exception caught", JOptionPane.ERROR_MESSAGE);
         System.exit(1);
     }
-
+    
     @Override
     public String getApplicationName() {
         return ClientImpl.APP_NAME;
     }
-
+    
     @Override
     public String getApplicationVersion() {
         return ClientImpl.APP_VERSION;
     }
-
+    
     @Override
     public MainFrame getApplicationMainFrame() {
         return this.mainFrame;

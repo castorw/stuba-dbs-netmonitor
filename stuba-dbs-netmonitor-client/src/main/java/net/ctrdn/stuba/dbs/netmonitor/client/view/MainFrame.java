@@ -5,14 +5,19 @@
  */
 package net.ctrdn.stuba.dbs.netmonitor.client.view;
 
-import com.apple.eawt.Application;
 import com.google.common.base.Preconditions;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import net.ctrdn.stuba.dbs.netmonitor.client.Client;
 import net.ctrdn.stuba.dbs.netmonitor.client.annotation.NetmonitorView;
@@ -24,9 +29,40 @@ import net.ctrdn.stuba.dbs.netmonitor.client.exception.InitializationException;
  */
 public class MainFrame extends javax.swing.JFrame {
 
-    private final Client client;
+    private class AutoRefresh implements Runnable {
 
+        private int refreshInterval = -1;
+        private Date lastRefresh = new Date();
+
+        @Override
+        public void run() {
+            try {
+                while (true) {
+                    if (this.getRefreshInterval() > -1 && new Date().getTime() - this.lastRefresh.getTime() > this.getRefreshInterval() * 1000 && MainFrame.this.activeView != null) {
+                        MainFrame.this.activeView.refresh();
+                        this.lastRefresh = new Date();
+                    }
+                    Thread.sleep(1000);
+                }
+            } catch (InterruptedException ex) {
+
+            }
+        }
+
+        public int getRefreshInterval() {
+            return refreshInterval;
+        }
+
+        public void setRefreshInterval(int refreshInterval) {
+            this.refreshInterval = refreshInterval;
+        }
+    }
+
+    private final Client client;
+    private Map<String, Integer> autorefreshMap = new HashMap<>();
     private final List<View> viewList = new ArrayList<>();
+    private View activeView = null;
+    private final AutoRefresh ar = new AutoRefresh();
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static void enableOSXFullscreen(Window window) throws InitializationException {
@@ -47,8 +83,33 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame(Client client) throws InitializationException {
         MainFrame.enableOSXFullscreen(this);
         initComponents();
+        new Thread(this.ar).start();
         Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation((screenDimension.width / 2) - (this.getWidth() / 2), (screenDimension.height / 2) - (this.getHeight() / 2));
+
+        this.autorefreshMap.put("Disabled", -1);
+        this.autorefreshMap.put("Every second", 1);
+        this.autorefreshMap.put("Every 5 seconds", 5);
+        this.autorefreshMap.put("Every 15 seconds", 15);
+        this.autorefreshMap.put("Every 30 seonds", 30);
+        this.autorefreshMap.put("Every minute", 60);
+        this.autorefreshMap.put("Every 5 minutes", 300);
+
+        List<String> autorefreshList = new ArrayList<>();
+        for (Map.Entry<String, Integer> mapEntry : this.autorefreshMap.entrySet()) {
+            autorefreshList.add(mapEntry.getKey());
+        }
+        Collections.sort(autorefreshList);
+
+        DefaultComboBoxModel arComboModel = new DefaultComboBoxModel();
+        for (String name : autorefreshList) {
+            arComboModel.addElement(name);
+            if (this.ar.refreshInterval == this.autorefreshMap.get(name).intValue()) {
+                arComboModel.setSelectedItem(name);
+            }
+        }
+        this.comboAutorefresh.setModel(arComboModel);
+
         this.client = client;
         this.jList1.setModel(new DefaultListModel());
     }
@@ -68,6 +129,9 @@ public class MainFrame extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
         jPanel1 = new javax.swing.JPanel();
+        jToolBar1 = new javax.swing.JToolBar();
+        jLabel1 = new javax.swing.JLabel();
+        comboAutorefresh = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -98,20 +162,38 @@ public class MainFrame extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 504, Short.MAX_VALUE)
+            .addGap(0, 473, Short.MAX_VALUE)
         );
 
         jSplitPane1.setRightComponent(jPanel1);
+
+        jToolBar1.setFloatable(false);
+        jToolBar1.setRollover(true);
+
+        jLabel1.setText("Autorefresh:");
+        jToolBar1.add(jLabel1);
+
+        comboAutorefresh.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboAutorefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboAutorefreshActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(comboAutorefresh);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 775, Short.MAX_VALUE)
+            .addComponent(jSplitPane1)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSplitPane1))
         );
 
         pack();
@@ -119,16 +201,23 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
         int index = this.jList1.getSelectedIndex();
-        View view = this.viewList.get(index);
-        view.refresh();
-        this.jSplitPane1.setRightComponent(view.getPanel());
+        this.activeView = this.viewList.get(index);
+        this.activeView.refresh();
+        this.jSplitPane1.setRightComponent(this.activeView.getPanel());
     }//GEN-LAST:event_jList1ValueChanged
+
+    private void comboAutorefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboAutorefreshActionPerformed
+        this.ar.setRefreshInterval(this.autorefreshMap.get((String) this.comboAutorefresh.getSelectedItem()));
+    }//GEN-LAST:event_comboAutorefreshActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox comboAutorefresh;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JList jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
 }

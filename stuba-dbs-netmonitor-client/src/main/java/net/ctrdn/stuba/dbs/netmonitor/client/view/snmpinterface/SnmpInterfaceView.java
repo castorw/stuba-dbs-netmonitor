@@ -14,6 +14,7 @@ import net.ctrdn.stuba.dbs.netmonitor.hbm.NmInterfaceAggregatedStats;
 import net.ctrdn.stuba.dbs.netmonitor.hbm.NmProbe;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 
 @NetmonitorView(
         author = "Lubomir Kaplan",
@@ -90,6 +91,7 @@ public class SnmpInterfaceView implements View {
         for (NmProbe probeRecord : (Set<NmProbe>) deviceRecord.getNmProbes()) {
             if (probeRecord.getNmProbeType().getProbeClasspath().equals("net.ctrdn.stuba.dbs.netmonitor.server.probe.iface.SnmpInterfaceProbe")) {
                 probe = probeRecord;
+                break;
             }
         }
         final NmProbe fProbeRecord = probe;
@@ -110,7 +112,7 @@ public class SnmpInterfaceView implements View {
 
     protected NmInterfaceAggregatedStats getAggregatedStats(NmProbe probeRecord) {
         this.mysqlSession.beginTransaction();
-        NmInterfaceAggregatedStats statsRecord = (NmInterfaceAggregatedStats) this.mysqlSession.createCriteria(NmInterfaceAggregatedStats.class).addOrder(Order.desc("createDate")).setMaxResults(1).uniqueResult();
+        NmInterfaceAggregatedStats statsRecord = (NmInterfaceAggregatedStats) this.mysqlSession.createCriteria(NmInterfaceAggregatedStats.class).add(Restrictions.eq("nmProbe", probeRecord)).addOrder(Order.desc("createDate")).setMaxResults(1).uniqueResult();
         this.mysqlSession.getTransaction().commit();
         return statsRecord;
     }
