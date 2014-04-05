@@ -12,6 +12,7 @@ import net.ctrdn.stuba.dbs.netmonitor.server.logging.LogSeverity;
 import net.ctrdn.stuba.dbs.netmonitor.server.probe.Probe;
 import net.ctrdn.stuba.dbs.netmonitor.server.snmp.SnmpClient;
 import org.hibernate.Session;
+import org.hibernate.exception.LockAcquisitionException;
 import org.snmp4j.smi.OID;
 import org.snmp4j.smi.VariableBinding;
 

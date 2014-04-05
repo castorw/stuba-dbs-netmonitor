@@ -11,6 +11,7 @@ import net.ctrdn.stuba.dbs.netmonitor.server.logging.LogSeverity;
 import net.ctrdn.stuba.dbs.netmonitor.server.probe.Probe;
 import net.ctrdn.stuba.dbs.netmonitor.server.snmp.SnmpClient;
 import org.hibernate.Session;
+import org.hibernate.exception.LockAcquisitionException;
 import org.snmp4j.smi.OID;
 
 @NetmonitorProbe(
@@ -69,6 +70,7 @@ public class SnmpStatusProbe implements Probe {
             }
             mysqlSession.createSQLQuery("UPDATE `nm_probe` SET `probe_status` = '" + probeStatus + "', `last_update_date` = CURRENT_TIMESTAMP WHERE `id` = '" + this.probeRecord.getId() + "'").executeUpdate();
             mysqlSession.getTransaction().commit();
+
             if (acquireException != null) {
                 throw acquireException;
             }

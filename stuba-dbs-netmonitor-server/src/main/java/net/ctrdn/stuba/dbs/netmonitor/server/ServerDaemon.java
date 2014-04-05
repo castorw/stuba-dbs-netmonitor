@@ -135,8 +135,21 @@ public class ServerDaemon implements Runnable, Server {
         for (NmDevice deviceRecord : deviceList) {
             this.getLog().message(LogSeverity.NOTICE, "Starting device controller for " + deviceRecord.getDeviceName() + " (" + deviceRecord.getIpv4Address() + ")");
             DeviceController dc = new DeviceController(this, deviceRecord);
-            new Thread(dc).start();
+            dc.initialize();
             this.deviceControllerList.add(dc);
+        }
+        try {
+            while (true) {
+                this.pollDevices();
+                Thread.sleep(Integer.parseInt(this.getConfiguration().getProperty("device.controller.polltime")) * 1000);
+            }
+        } catch (InterruptedException ex) {
+        }
+    }
+
+    private void pollDevices() {
+        for (DeviceController dc : this.deviceControllerList) {
+            dc.poll();
         }
     }
 

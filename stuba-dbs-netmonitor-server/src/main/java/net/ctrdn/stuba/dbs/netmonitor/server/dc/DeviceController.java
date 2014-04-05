@@ -15,7 +15,7 @@ import net.ctrdn.stuba.dbs.netmonitor.server.logging.LogSeverity;
 import net.ctrdn.stuba.dbs.netmonitor.server.probe.Probe;
 import org.hibernate.Session;
 
-public class DeviceController implements Runnable {
+public class DeviceController {
 
     private final Server server;
     private final NmDevice deviceRecord;
@@ -28,8 +28,7 @@ public class DeviceController implements Runnable {
         this.pollTime = Integer.parseInt(server.getConfiguration().getProperty("device.controller.polltime"));
     }
 
-    @Override
-    public void run() {
+    public void initialize() {
         this.probeList = new ArrayList<>();
         Session mysqlSession = this.server.getMysqlSessionFactory().openSession();
         mysqlSession.beginTransaction();
@@ -48,23 +47,18 @@ public class DeviceController implements Runnable {
         }
         mysqlSession.getTransaction().commit();
         mysqlSession.disconnect();
+    }
 
-        try {
-            while (true) {
-                for (Probe p : this.probeList) {
-                    try {
-                        Date pollStart = new Date();
-                        p.poll();
-                        Date pollEnd = new Date();
-                        this.server.getLog().message(LogSeverity.NOTICE, "Probe " + p.getClass().getAnnotation(NetmonitorProbe.class).name() + " on " + this.deviceRecord.getDeviceName() + " took " + (pollEnd.getTime() - pollStart.getTime()) + "ms");
-                    } catch (ProbeException ex) {
-                        this.server.getLog().message(LogSeverity.ERROR, "Polling error: " + ex.getMessage());
-                    }
-                }
-                Thread.sleep(Integer.parseInt(this.server.getConfiguration().getProperty("device.controller.polltime")) * 1000);
+    public void poll() {
+        for (Probe p : this.probeList) {
+            try {
+                Date pollStart = new Date();
+                p.poll();
+                Date pollEnd = new Date();
+                this.server.getLog().message(LogSeverity.NOTICE, "Probe " + p.getClass().getAnnotation(NetmonitorProbe.class).name() + " on " + this.deviceRecord.getDeviceName() + " took " + (pollEnd.getTime() - pollStart.getTime()) + "ms");
+            } catch (ProbeException ex) {
+                this.server.getLog().message(LogSeverity.ERROR, "Polling error: " + ex.getMessage());
             }
-        } catch (InterruptedException ex) {
-
         }
     }
 }
