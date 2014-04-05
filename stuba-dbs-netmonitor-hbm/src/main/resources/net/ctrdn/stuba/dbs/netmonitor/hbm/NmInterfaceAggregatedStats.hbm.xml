@@ -1,32 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated Mar 18, 2014 9:13:36 PM by Hibernate Tools 3.6.0 -->
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Apr 5, 2014 4:21:51 PM by Hibernate Tools 3.6.0 -->
 <hibernate-mapping>
-    <class catalog="stuba_netmonitor" name="net.ctrdn.stuba.dbs.netmonitor.hbm.NmInterfaceAggregatedStats" table="nm_interface_aggregated_stats">
+    <class name="net.ctrdn.stuba.dbs.netmonitor.hbm.NmInterfaceAggregatedStats" table="nm_interface_aggregated_stats" catalog="stuba_netmonitor">
         <id name="id" type="java.lang.Integer">
-            <column name="id"/>
-            <generator class="identity"/>
+            <column name="id" />
+            <generator class="identity" />
         </id>
-        <many-to-one class="net.ctrdn.stuba.dbs.netmonitor.hbm.NmProbe" fetch="select" name="nmProbe">
-            <column name="probe_id" not-null="true"/>
+        <many-to-one name="nmProbe" class="net.ctrdn.stuba.dbs.netmonitor.hbm.NmProbe" fetch="select">
+            <column name="probe_id" not-null="true" />
         </many-to-one>
         <property name="interfaceCount" type="int">
-            <column name="interface_count" not-null="true"/>
+            <column name="interface_count" not-null="true" />
         </property>
         <property name="rxBytes" type="long">
-            <column name="rx_bytes" not-null="true"/>
+            <column name="rx_bytes" not-null="true" />
         </property>
         <property name="txBytes" type="long">
-            <column name="tx_bytes" not-null="true"/>
+            <column name="tx_bytes" not-null="true" />
         </property>
         <property name="rxPackets" type="long">
-            <column name="rx_packets" not-null="true"/>
+            <column name="rx_packets" not-null="true" />
         </property>
         <property name="txPackets" type="long">
-            <column name="tx_packets" not-null="true"/>
+            <column name="tx_packets" not-null="true" />
         </property>
         <property name="createDate" type="timestamp">
-            <column length="19" name="create_date" not-null="true"/>
+            <column name="create_date" length="19" not-null="true" />
         </property>
     </class>
 </hibernate-mapping>
