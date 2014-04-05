@@ -26,7 +26,7 @@
         <property name="createDate" type="timestamp">
             <column name="create_date" length="19" not-null="true" />
         </property>
-        <set name="nmInterfaceStatses" table="nm_interface_stats" inverse="true" lazy="true" fetch="select">
+        <set name="nmInterfaceStatses" table="nm_interface_stats" inverse="true" lazy="true" fetch="select" cascade="all-delete-orphan">
             <key>
                 <column name="interface_id" not-null="true" />
             </key>

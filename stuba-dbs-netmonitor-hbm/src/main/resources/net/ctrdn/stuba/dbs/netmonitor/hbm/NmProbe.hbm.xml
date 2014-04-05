@@ -23,19 +23,19 @@
         <property name="createDate" type="timestamp">
             <column name="create_date" length="19" not-null="true" />
         </property>
-        <set name="nmProbeStatses" table="nm_probe_stats" inverse="true" lazy="true" fetch="select">
+        <set name="nmProbeStatses" table="nm_probe_stats" inverse="true" lazy="true" fetch="select" cascade="all-delete-orphan">
             <key>
                 <column name="probe_identity_id" not-null="true" />
             </key>
             <one-to-many class="net.ctrdn.stuba.dbs.netmonitor.hbm.NmProbeStats" />
         </set>
-        <set name="nmInterfaces" table="nm_interface" inverse="true" lazy="true" fetch="select">
+        <set name="nmInterfaces" table="nm_interface" inverse="true" lazy="true" fetch="select" cascade="all-delete-orphan">
             <key>
                 <column name="probe_id" not-null="true" />
             </key>
             <one-to-many class="net.ctrdn.stuba.dbs.netmonitor.hbm.NmInterface" />
         </set>
-        <set name="nmInterfaceAggregatedStatses" table="nm_interface_aggregated_stats" inverse="true" lazy="true" fetch="select">
+        <set name="nmInterfaceAggregatedStatses" table="nm_interface_aggregated_stats" inverse="true" lazy="true" fetch="select" cascade="all-delete-orphan">
             <key>
                 <column name="probe_id" not-null="true" />
             </key>
