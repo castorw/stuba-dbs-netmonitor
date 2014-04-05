@@ -11,7 +11,6 @@ import net.ctrdn.stuba.dbs.netmonitor.server.logging.LogSeverity;
 import net.ctrdn.stuba.dbs.netmonitor.server.probe.Probe;
 import net.ctrdn.stuba.dbs.netmonitor.server.snmp.SnmpClient;
 import org.hibernate.Session;
-import org.hibernate.exception.LockAcquisitionException;
 import org.snmp4j.smi.OID;
 
 @NetmonitorProbe(
@@ -65,7 +64,7 @@ public class SnmpStatusProbe implements Probe {
                 this.updateStats(mysqlSession, "sysName", sysName);
                 this.updateStats(mysqlSession, "sysDescr", sysDescr);
                 this.updateStats(mysqlSession, "sysUptime", sysUptime);
-                this.updateStats(mysqlSession, "sysLocaion", sysLocation);
+                this.updateStats(mysqlSession, "sysLocation", sysLocation);
                 this.logMessage(LogSeverity.DEBUG, this.deviceRecord.getDeviceName() + " (" + this.deviceRecord.getIpv4Address() + ") received sysName, sysDescr, sysUptime, sysLocation successfully");
             }
             mysqlSession.createSQLQuery("UPDATE `nm_probe` SET `probe_status` = '" + probeStatus + "', `last_update_date` = CURRENT_TIMESTAMP WHERE `id` = '" + this.probeRecord.getId() + "'").executeUpdate();
